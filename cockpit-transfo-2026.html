@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cockpit DSI 2026 – Transformation Agile</title>
+
+  <style>
+    :root{
+      --bg:#f1f5f9;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --shadow:0 10px 25px rgba(15,23,42,.06);
+
+      --axe1:#f43f5e; --axe1bg:#fff1f2;
+      --axe2:#3b82f6; --axe2bg:#eff6ff;
+      --axe3:#8b5cf6; --axe3bg:#f5f3ff;
+      --axe4:#10b981; --axe4bg:#ecfdf5;
+
+      --radius:18px;
+      --radius2:24px;
+      --max:1600px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    /* Layout */
+    .container{ max-width:var(--max); margin:0 auto; padding:18px 16px 42px; }
+
+    /* Header sticky */
+    .header{
+      position:sticky; top:0; z-index:50;
+      background:rgba(255,255,255,.82);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 6px 18px rgba(15,23,42,.06);
+    }
+    .header-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 16px;
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    /* Brand */
+    .brand{
+      display:flex; gap:12px; align-items:center;
+      min-width: 260px;
+    }
+    .badge{
+      width:38px; height:38px;
+      border-radius:12px;
+      background:var(--text);
+      display:grid; place-items:center;
+      color:#fff;
+      box-shadow: var(--shadow);
+      flex:0 0 auto;
+      font-weight:900;
+    }
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:-.02em;
+      line-height:1.1;
+    }
+    .brand small{
+      display:block;
+      margin-top:2px;
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .brand .accent{ color:var(--axe1); font-weight:950; }
+
+    /* View switch */
+    .switch{
+      display:flex;
+      background:#e2e8f0;
+      border-radius:14px;
+      padding:4px;
+      gap:4px;
+      align-items:center;
+    }
+    .switch button{
+      border:0;
+      background:transparent;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      color:#334155;
+      transition: background .15s ease, color .15s ease;
+      white-space:nowrap;
+    }
+    .switch button.active{
+      background:var(--text);
+      color:#fff;
+    }
+
+    /* Search */
+    .search{
+      position:relative;
+      min-width: 280px;
+      flex: 1 1 320px;
+      max-width: 420px;
+    }
+    .search input{
+      width:100%;
+      padding:10px 14px 10px 42px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      outline:none;
+      font-size:13px;
+    }
+    .search input:focus{
+      border-color: rgba(244,63,94,.4);
+      box-shadow:0 0 0 3px rgba(244,63,94,.12);
+      background:#fff;
+    }
+    .search .icon{
+      position:absolute;
+      left:14px; top:50%;
+      transform:translateY(-50%);
+      color:#94a3b8;
+      font-weight:900;
+      font-size:14px;
+      user-select:none;
+    }
+
+    /* Sections */
+    .section-title{
+      margin:0 0 10px;
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      color:#94a3b8;
+    }
+
+    /* Pilot chips */
+    .chips{
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      padding-bottom:10px;
+      scrollbar-width: thin;
+    }
+    .chips::-webkit-scrollbar{ height:6px; }
+    .chips::-webkit-scrollbar-thumb{ background:#cbd5e1; border-radius:999px; }
+    .chip{
+      flex:0 0 auto;
+      border:1px solid #cbd5e1;
+      background:#fff;
+      padding:10px 14px;
+      border-radius:14px;
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+      color:#334155;
+      transition: transform .08s ease, border-color .12s ease, background .12s ease, color .12s ease;
+    }
+    .chip:hover{ border-color: rgba(244,63,94,.55); }
+    .chip:active{ transform:scale(.98); }
+    .chip.active{
+      background:var(--axe1);
+      border-color:var(--axe1);
+      color:#fff;
+    }
+
+    /* View headings */
+    .view-head{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+      justify-content:space-between;
+      margin: 18px 0 12px;
+    }
+    .view-head h2{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-.02em;
+    }
+    .view-head p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-style:italic;
+    }
+
+    /* Axe filters */
+    .axe-filters{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .axe-btn{
+      border:1px solid #cbd5e1;
+      background:#fff;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+      transition: background .12s ease, border-color .12s ease, color .12s ease, transform .08s ease;
+      color:#334155;
+    }
+    .axe-btn:hover{ background:#e2e8f0; }
+    .axe-btn:active{ transform:scale(.98); }
+    .axe-btn.active{
+      background:var(--text);
+      border-color:var(--text);
+      color:#fff;
+    }
+
+    /* Grid cards */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      grid-column: span 12;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius2);
+      padding:16px;
+      box-shadow: var(--shadow);
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      box-shadow:0 18px 40px rgba(15,23,42,.09);
+    }
+    @media (min-width: 760px){ .card{ grid-column: span 6; } }
+    @media (min-width: 1100px){ .card{ grid-column: span 4; } }
+    @media (min-width: 1400px){ .card{ grid-column: span 3; } }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#0f172a;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .pill.axe1{ background:var(--axe1bg); border-color: rgba(244,63,94,.18); color:var(--axe1); }
+    .pill.axe2{ background:var(--axe2bg); border-color: rgba(59,130,246,.18); color:var(--axe2); }
+    .pill.axe3{ background:var(--axe3bg); border-color: rgba(139,92,246,.18); color:var(--axe3); }
+    .pill.axe4{ background:var(--axe4bg); border-color: rgba(16,185,129,.18); color:var(--axe4); }
+
+    .card-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .id{
+      color:#cbd5e1;
+      font-weight:950;
+      font-size:12px;
+    }
+    .title{
+      margin:0 0 8px;
+      font-size:15px;
+      font-weight:950;
+      letter-spacing:-.01em;
+      line-height:1.2;
+      height: 38px;
+      overflow:hidden;
+    }
+    .bar{
+      width:100%;
+      height:8px;
+      background:#e2e8f0;
+      border-radius:999px;
+      overflow:hidden;
+      margin: 10px 0 12px;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background:#0f172a;
+      transition: width .5s ease;
+    }
+    .card-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .pilot{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+    .avatar{
+      width:32px; height:32px;
+      border-radius:999px;
+      background:#f1f5f9;
+      border:1px solid #e2e8f0;
+      display:grid; place-items:center;
+      font-weight:950;
+      font-size:11px;
+      color:#64748b;
+      flex:0 0 auto;
+    }
+    .pilot span{
+      font-size:12px;
+      font-weight:900;
+      color:#475569;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 180px;
+    }
+    .pct{
+      font-weight:950;
+      color:#0f172a;
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    /* Piste view */
+    .pistes{ display:flex; flex-direction:column; gap:14px; }
+    .track{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .track-head{
+      padding:12px 16px;
+      border-bottom:1px solid #f1f5f9;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      background: #fff;
+    }
+    .track-head .label{
+      font-weight:950;
+      font-size:11px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .track-head .num{
+      font-size:11px;
+      font-weight:900;
+      color:#94a3b8;
+    }
+    .track-body{
+      height:96px;
+      position:relative;
+      padding: 0 34px;
+      display:flex;
+      align-items:center;
+      background: rgba(241,245,249,.55);
+    }
+    .line{
+      position:absolute;
+      left:34px; right:34px;
+      height:1px;
+      background:#cbd5e1;
+      top:50%;
+      transform:translateY(-50%);
+      z-index:0;
+    }
+    .ticks{
+      position:absolute;
+      left:34px; right:34px;
+      top:50%;
+      transform:translateY(-50%);
+      display:flex;
+      justify-content:space-between;
+      z-index:0;
+    }
+    .ticks i{
+      display:block;
+      width:1px; height:10px;
+      background:#94a3b8;
+      opacity:.6;
+    }
+    .pion{
+      position:absolute;
+      width:30px; height:30px;
+      border-radius:999px;
+      background:#fff;
+      border:2px solid #0f172a;
+      display:grid; place-items:center;
+      font-weight:950;
+      font-size:11px;
+      cursor:pointer;
+      z-index:2;
+      box-shadow:0 10px 20px rgba(15,23,42,.12);
+      transition: transform .12s ease, background .12s ease, color .12s ease;
+      user-select:none;
+    }
+    .pion:hover{
+      transform: scale(1.18);
+      z-index:5;
+    }
+
+    /* Modal */
+    .backdrop{
+      position:fixed; inset:0;
+      background: rgba(15,23,42,.6);
+      backdrop-filter: blur(4px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 14px;
+      z-index:100;
+    }
+    .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius: 26px;
+      overflow:hidden;
+      box-shadow:0 35px 90px rgba(15,23,42,.32);
+      border:1px solid rgba(226,232,240,.6);
+    }
+    .modal-header{
+      padding: 18px 18px 16px;
+      color:#fff;
+      position:relative;
+    }
+    .close{
+      position:absolute;
+      right:14px; top:14px;
+      border:0;
+      background: rgba(255,255,255,.18);
+      color:#fff;
+      width:36px; height:36px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:950;
+    }
+    .m-axe{
+      display:inline-flex;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      background: rgba(255,255,255,.22);
+    }
+    .modal-header h3{
+      margin:10px 0 0;
+      font-size:18px;
+      font-weight:950;
+      letter-spacing:-.02em;
+      line-height:1.2;
+    }
+    .modal-body{ padding: 16px 18px 18px; }
+    .m-row{
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:12px;
+    }
+    .m-avatar{
+      width:44px; height:44px;
+      border-radius:16px;
+      background:#f1f5f9;
+      border:1px solid var(--border);
+      display:grid; place-items:center;
+      font-weight:950;
+      color:#475569;
+    }
+    .m-meta small{
+      display:block;
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#94a3b8;
+      margin-bottom:2px;
+    }
+    .m-meta b{ font-size:14px; }
+    .m-desc{
+      margin: 10px 0 14px;
+      color:#475569;
+      line-height:1.5;
+      font-size:14px;
+    }
+    .panel{
+      background:#f8fafc;
+      border:1px solid #eef2f7;
+      border-radius: 18px;
+      padding:14px;
+    }
+    .panel-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .panel-top span{
+      font-size:11px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#64748b;
+    }
+    .panel-top strong{
+      font-size:26px;
+      font-weight:950;
+      color:#0f172a;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color: var(--axe1);
+    }
+    .scale{
+      display:flex;
+      justify-content:space-between;
+      margin-top:8px;
+      font-size:10px;
+      font-weight:900;
+      color:#94a3b8;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .save{
+      width:100%;
+      margin-top:14px;
+      border:0;
+      background:#0f172a;
+      color:#fff;
+      padding:12px 14px;
+      border-radius: 16px;
+      font-weight:950;
+      cursor:pointer;
+      transition: transform .08s ease, background .12s ease;
+    }
+    .save:hover{ background:#111827; }
+    .save:active{ transform:scale(.99); }
+
+    /* Views */
+    .hidden{ display:none !important; }
+
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="badge">🚀</div>
+        <div>
+          <h1>TRANSFO<span class="accent">2026</span></h1>
+          <small>Cockpit DSI</small>
+        </div>
+      </div>
+
+      <div class="switch" aria-label="Changer de vue">
+        <button id="btn-grid" class="active" type="button" onclick="switchView('grid')">▦ Bourse</button>
+        <button id="btn-piste" type="button" onclick="switchView('piste')">⟷ Jeu de piste</button>
+      </div>
+
+      <div class="search">
+        <span class="icon">⌕</span>
+        <input id="mainSearch" type="text" placeholder="Rechercher un levier ou un pilote…" oninput="filterAll()" />
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2 class="section-title">Porteurs d’initiatives</h2>
+      <div id="pilotsList" class="chips"></div>
+    </section>
+
+    <!-- VUE BOURSE -->
+    <section id="view-grid">
+      <div class="view-head">
+        <div>
+          <h2>Bourse aux leviers</h2>
+          <p>39 leviers pour passer du constat à l’action.</p>
+        </div>
+        <div class="axe-filters" role="tablist" aria-label="Filtrer par axe">
+          <button class="axe-btn active" data-axe="all" type="button" onclick="filterByAxe('all')">Tous</button>
+          <button class="axe-btn" data-axe="1" type="button" onclick="filterByAxe(1)">Axe 1</button>
+          <button class="axe-btn" data-axe="2" type="button" onclick="filterByAxe(2)">Axe 2</button>
+          <button class="axe-btn" data-axe="3" type="button" onclick="filterByAxe(3)">Axe 3</button>
+          <button class="axe-btn" data-axe="4" type="button" onclick="filterByAxe(4)">Axe 4</button>
+        </div>
+      </div>
+
+      <div id="projectsGrid" class="grid"></div>
+    </section>
+
+    <!-- VUE PISTE -->
+    <section id="view-piste" class="hidden">
+      <div class="view-head">
+        <div>
+          <h2>Dynamique de transformation</h2>
+          <p>Visualisez l’avancement des leviers par axe.</p>
+        </div>
+      </div>
+
+      <div id="pistesContainer" class="pistes"></div>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div id="backdrop" class="backdrop" onclick="if(event.target===this) closeModal()">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Détails levier">
+      <div id="modalHeader" class="modal-header">
+        <button class="close" type="button" onclick="closeModal()">✕</button>
+        <span id="mAxe" class="m-axe">Axe 1</span>
+        <h3 id="mTitle">—</h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="m-row">
+          <div id="mAvatar" class="m-avatar">—</div>
+          <div class="m-meta">
+            <small>Porté par</small>
+            <b id="mPilot">—</b>
+          </div>
+        </div>
+
+        <p id="mDesc" class="m-desc">—</p>
+
+        <div class="panel">
+          <div class="panel-top">
+            <span>Niveau d’avancement</span>
+            <strong id="mProgressText">0%</strong>
+          </div>
+
+          <input id="mSlider" type="range" min="0" max="100" step="1" oninput="updateModalProgress(this.value)" />
+
+          <div class="scale">
+            <span>Backlog</span><span>En cours</span><span>Test</span><span>Succès</span>
+          </div>
+        </div>
+
+        <button class="save" type="button" onclick="saveProgress()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // Données (à remplacer par tes 39 vraies lignes)
+    // =========================
+    const projects = [
+      { id: 1, axe: 1, title: "Cartographie compétences", pilot: "Julien C.", progress: 20, desc: "Identifier les savoirs critiques et plans de succession pour sécuriser le delivery stratégique." },
+      { id: 2, axe: 1, title: "Documentation Knowledge", pilot: "Julien G.", progress: 5, desc: "Wiki technique et process de passation pour fluidifier les mouvements internes." },
+      { id: 4, axe: 1, title: "Fondamentaux Delivery", pilot: "Tribu Transfo", progress: 65, desc: "Standards DoR/DoD pour harmoniser la qualité et la vélocité des squads." },
+      { id: 11, axe: 2, title: "Reporting JIRA Unifié", pilot: "Kevin M.", progress: 40, desc: "Automatisation des dashboards pour un pilotage par la valeur sans saisie manuelle." },
+      { id: 12, axe: 2, title: "Portail Roadmap (FDR)", pilot: "Angélique B.", progress: 85, desc: "Visibilité transverse des feuilles de route pour aligner toutes les équipes." },
+      { id: 21, axe: 3, title: "Synergie Métier / SI", pilot: "Arthur C.", progress: 30, desc: "Acculturation des directions métiers pour une meilleure co-conception des services." },
+      { id: 31, axe: 4, title: "DevOps Commun", pilot: "Tribu Transfo", progress: 15, desc: "Pipeline CI/CD standardisé pour accélérer le déploiement et réduire les erreurs." },
+      { id: 38, axe: 4, title: "Rétro Filière", pilot: "Tribu Transfo", progress: 100, desc: "Amélioration continue basée sur les retours réels du terrain." }
+    ];
+
+    // Démo : compléter à 39 (à supprimer quand tu mets tes vraies données)
+    const pilotsPool = ["David P.","Anne D.","MF Thickett","Delphine C.","Sylvie Z.","Vanessa G.","Kevin M."];
+    while (projects.length < 39){
+      const i = projects.length + 1;
+      projects.push({
+        id: i,
+        axe: (i % 4) + 1,
+        title: `Levier Agile n°${i}`,
+        pilot: pilotsPool[i % pilotsPool.length],
+        progress: Math.floor(Math.random()*80),
+        desc: "Action structurante pour transformer durablement nos modes de collaboration au sein de la DSI."
+      });
+    }
+
+    // =========================
+    // State + persistence (localStorage)
+    // =========================
+    const LS_KEY = "cockpit_transfo_2026_progress_v1";
+
+    function loadProgress(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw) return;
+        const map = JSON.parse(raw);
+        projects.forEach(p => {
+          if (map[p.id] !== undefined) p.progress = Number(map[p.id]) || 0;
+        });
+      }catch(e){}
+    }
+
+    function saveProgressMap(){
+      const map = {};
+      projects.forEach(p => map[p.id] = p.progress);
+      try{ localStorage.setItem(LS_KEY, JSON.stringify(map)); }catch(e){}
+    }
+
+    // =========================
+    // UI state
+    // =========================
+    let currentView = "grid";
+    let filterAxe = "all";
+    let filterPilot = "all";
+    let activeEditId = null;
+
+    const axeLabels = ["", "Mes besoins", "Aide communauté", "Je peux aider", "Les collectifs"];
+    const axeColor = ["", "var(--axe1)", "var(--axe2)", "var(--axe3)", "var(--axe4)"];
+
+    function initials(name=""){
+      return name.split(" ").filter(Boolean).map(w => w[0]).slice(0,2).join("").toUpperCase() || "—";
+    }
+
+    function switchView(view){
+      currentView = view;
+      document.getElementById("view-grid").classList.toggle("hidden", view !== "grid");
+      document.getElementById("view-piste").classList.toggle("hidden", view !== "piste");
+      document.getElementById("btn-grid").classList.toggle("active", view === "grid");
+      document.getElementById("btn-piste").classList.toggle("active", view === "piste");
+      filterAll();
+    }
+
+    function renderPilots(){
+      const container = document.getElementById("pilotsList");
+      const uniq = [...new Set(projects.map(p => p.pilot))].sort((a,b)=> String(a).localeCompare(String(b), "fr"));
+      container.innerHTML = "";
+
+      const all = document.createElement("button");
+      all.type = "button";
+      all.className = "chip active";
+      all.textContent = "Tous";
+      all.dataset.value = "all";
+      all.onclick = () => setPilotFilter("all");
+      container.appendChild(all);
+
+      uniq.forEach(pilot => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.textContent = pilot;
+        b.dataset.value = pilot;
+        b.onclick = () => setPilotFilter(pilot);
+        container.appendChild(b);
+      });
+    }
+
+    function setPilotFilter(p){
+      filterPilot = p;
+      document.querySelectorAll(".chip").forEach(el => el.classList.toggle("active", el.dataset.value === String(p)));
+      filterAll();
+    }
+
+    function filterByAxe(axe){
+      filterAxe = axe;
+      document.querySelectorAll(".axe-btn").forEach(el => el.classList.toggle("active", el.dataset.axe === String(axe)));
+      filterAll();
+    }
+
+    function filterAll(){
+      const search = (document.getElementById("mainSearch").value || "").toLowerCase().trim();
+
+      const filtered = projects.filter(p => {
+        const matchesAxe = filterAxe === "all" || p.axe === filterAxe;
+        const matchesPilot = filterPilot === "all" || p.pilot === filterPilot;
+        const matchesSearch = !search
+          || (p.title || "").toLowerCase().includes(search)
+          || (p.pilot || "").toLowerCase().includes(search)
+          || (p.desc || "").toLowerCase().includes(search);
+        return matchesAxe && matchesPilot && matchesSearch;
+      });
+
+      renderGrid(filtered);
+      renderPistes(filtered);
+    }
+
+    function axeClass(n){
+      return n===1 ? "axe1" : n===2 ? "axe2" : n===3 ? "axe3" : "axe4";
+    }
+
+    function escapeHtml(str=""){
+      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+
+    function renderGrid(data){
+      const grid = document.getElementById("projectsGrid");
+      grid.innerHTML = "";
+
+      data.forEach(p => {
+        const c = document.createElement("article");
+        c.className = "card";
+        c.onclick = () => openModal(p.id);
+
+        c.innerHTML = `
+          <div class="card-top">
+            <span class="pill ${axeClass(p.axe)}">Axe ${p.axe} · ${escapeHtml(axeLabels[p.axe] || "")}</span>
+            <span class="id">#${p.id}</span>
+          </div>
+
+          <h3 class="title">${escapeHtml(p.title)}</h3>
+
+          <div class="bar"><div style="width:${p.progress}%"></div></div>
+
+          <div class="card-bottom">
+            <div class="pilot">
+              <div class="avatar">${escapeHtml(initials(p.pilot))}</div>
+              <span title="${escapeHtml(p.pilot)}">${escapeHtml(p.pilot)}</span>
+            </div>
+            <div class="pct">${p.progress}%</div>
+          </div>
+        `;
+        grid.appendChild(c);
+      });
+    }
+
+    function renderPistes(data){
+      const container = document.getElementById("pistesContainer");
+      if (currentView !== "piste"){
+        container.innerHTML = "";
+        return;
+      }
+
+      container.innerHTML = "";
+      const labels = ["", "Mes besoins (individuel)", "Aide communauté (support)", "Je peux aider (expertise)", "Collectifs (filière)"];
+
+      for (let i=1; i<=4; i++){
+        const track = document.createElement("div");
+        track.className = "track";
+
+        track.innerHTML = `
+          <div class="track-head">
+            <div class="label" style="color:${axeColor[i]}">${escapeHtml(labels[i])}</div>
+            <div class="num">Piste n°${i}</div>
+          </div>
+          <div class="track-body" id="track-${i}">
+            <div class="line"></div>
+            <div class="ticks"><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        `;
+        container.appendChild(track);
+
+        const host = track.querySelector(`#track-${i}`);
+        data.filter(p => p.axe === i).forEach(p => {
+          const pion = document.createElement("div");
+          pion.className = "pion";
+          pion.textContent = p.id;
+          pion.title = p.title;
+          pion.style.borderColor = axeColor[i];
+          pion.style.color = axeColor[i];
+
+          const jitter = ((p.id * 37) % 28) - 14; // stable -14..+13
+          pion.style.left = `calc(${p.progress}% + 34px - 15px)`;
+          pion.style.top = `calc(50% - 15px + ${jitter}px)`;
+          pion.onclick = (e) => { e.stopPropagation(); openModal(p.id); };
+
+          host.appendChild(pion);
+        });
+      }
+    }
+
+    function openModal(id){
+      activeEditId = id;
+      const p = projects.find(x => x.id === id);
+      if (!p) return;
+
+      const header = document.getElementById("modalHeader");
+      header.style.background = `linear-gradient(135deg, ${axeColor[p.axe]}, rgba(15,23,42,.85))`;
+
+      document.getElementById("mAxe").textContent = `Axe ${p.axe} · ${axeLabels[p.axe]}`;
+      document.getElementById("mTitle").textContent = p.title;
+      document.getElementById("mPilot").textContent = p.pilot;
+      document.getElementById("mAvatar").textContent = initials(p.pilot);
+      document.getElementById("mDesc").textContent = p.desc;
+
+      const slider = document.getElementById("mSlider");
+      slider.value = p.progress;
+      slider.style.accentColor = getComputedStyle(document.documentElement).getPropertyValue(
+        p.axe===1 ? "--axe1" : p.axe===2 ? "--axe2" : p.axe===3 ? "--axe3" : "--axe4"
+      );
+
+      updateModalProgress(p.progress);
+
+      document.getElementById("backdrop").style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    function updateModalProgress(val){
+      document.getElementById("mProgressText").textContent = `${val}%`;
+    }
+
+    function closeModal(){
+      document.getElementById("backdrop").style.display = "none";
+      document.body.style.overflow = "";
+      activeEditId = null;
+    }
+
+    function saveProgress(){
+      if (activeEditId == null) return;
+      const p = projects.find(x => x.id === activeEditId);
+      if (!p) return;
+      p.progress = parseInt(document.getElementById("mSlider").value, 10) || 0;
+      saveProgressMap();
+      filterAll();
+      closeModal();
+    }
+
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+
+    window.onload = () => {
+      loadProgress();
+      renderPilots();
+      filterAll();
+    };
+  </script>
+</body>
+</html>
