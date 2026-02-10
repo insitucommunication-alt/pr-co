@@ -3,15 +3,21 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Cockpit DSI 2026 – Connect Edition</title>
+    <title>Cockpit DSI 2026 – Culture Coopération</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --maif-red: #d32f2f;
             --bg-neutral: #f8fafc;
             --border-color: #e2e8f0;
             --text-main: #1e293b;
+            
+            /* Couleurs des Axes */
+            --axe1-color: #6fad9f;
+            --axe2-color: #d15092;
+            --axe3-color: #f1a53a;
+            --axe4-color: #4693ad;
         }
 
         body {
@@ -34,7 +40,6 @@
             position: relative;
         }
         .glass-card:hover {
-            border-color: var(--maif-red);
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             transform: translateY(-3px);
         }
@@ -44,7 +49,6 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--maif-red);
         }
 
         .precon-id {
@@ -64,8 +68,8 @@
             font-size: 11px;
         }
         .pilot-link:hover {
-            color: var(--maif-red);
-            text-decoration-color: var(--maif-red);
+            color: var(--text-main);
+            text-decoration-color: var(--text-main);
         }
 
         .progress-track {
@@ -78,7 +82,6 @@
         }
         .progress-fill {
             height: 100%;
-            background-color: var(--maif-red);
             border-radius: 4px;
             transition: width 0.5s ease-out;
         }
@@ -99,8 +102,8 @@
             letter-spacing: 0.05em;
         }
         .nav-link.active {
-            color: var(--maif-red);
-            border-bottom-color: var(--maif-red);
+            color: #1e293b;
+            border-bottom-color: #1e293b;
         }
 
         .axe-filter-btn {
@@ -109,8 +112,8 @@
             text-transform: uppercase;
             color: #64748b;
             letter-spacing: 0.02em;
+            transition: color 0.2s;
         }
-        .axe-filter-btn.active { color: var(--maif-red); font-weight: 800; }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
@@ -125,44 +128,35 @@
 <body>
 
     <header class="header-blur sticky top-0 z-50 px-8 py-4">
-        <div class="max-w-[1600px] mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-9 h-9 bg-black text-white flex items-center justify-center rounded-lg text-sm font-black italic">M</div>
-                <div>
-                    <h1 class="text-lg font-light tracking-tight leading-none uppercase">Transfo<span class="text-[#d32f2f] font-bold italic">2026</span></h1>
-                    <p class="text-[9px] uppercase tracking-[0.2em] text-gray-400 mt-1 font-bold">Cockpit DSI Connect</p>
-                </div>
-            </div>
-
-            <nav class="hidden md:flex gap-10">
-                <button onclick="switchView('grid')" id="btn-grid" class="nav-link active">Bourse aux leviers</button>
-                <button onclick="switchView('piste')" id="btn-piste" class="nav-link">Dynamique Agile</button>
+        <div class="max-w-[1600px] mx-auto grid grid-cols-3 items-center">
+            <!-- Gauche: Navigation -->
+            <nav class="flex gap-8">
+                <button onclick="switchView('grid')" id="btn-grid" class="nav-link active">Vos préconisations</button>
+                <button onclick="switchView('piste')" id="btn-piste" class="nav-link">Tableau de bord</button>
             </nav>
 
-            <div class="flex items-center gap-4">
-                <button onclick="downloadApp()" class="text-[10px] font-bold uppercase bg-slate-100 px-4 py-2 rounded-full hover:bg-slate-200 transition-all mr-2">Télécharger .html</button>
-                <input id="mainSearch" oninput="filterAll()" type="text" placeholder="Rechercher..." class="bg-gray-50 border border-gray-200 rounded-full px-5 py-1.5 text-xs w-56 focus:ring-1 focus:ring-red-600 outline-none transition-all">
-                <div class="w-8 h-8 rounded-full bg-slate-200 border border-white flex items-center justify-center text-[10px] font-bold">JD</div>
+            <!-- Centre: Titre Stratégique -->
+            <div class="flex flex-col items-center text-center">
+                <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400 leading-tight">Vers une culture de la</span>
+                <span class="text-lg font-black uppercase tracking-tight text-[#d32f2f] leading-none mt-1">Coopération renforcée</span>
+            </div>
+
+            <!-- Droite: Recherche -->
+            <div class="flex justify-end">
+                <input id="mainSearch" oninput="filterAll()" type="text" placeholder="Rechercher..." class="bg-gray-50 border border-gray-200 rounded-full px-5 py-1.5 text-xs w-56 focus:ring-1 focus:ring-slate-400 outline-none transition-all">
             </div>
         </div>
     </header>
 
     <main class="max-w-[1600px] mx-auto p-8">
         
-        <div class="flex flex-col xl:flex-row justify-between items-center mb-8 gap-6 border-b border-gray-100 pb-6">
-            <div class="flex gap-6 items-center w-full xl:w-auto overflow-hidden">
-                <h2 class="text-xl font-bold text-slate-800 italic whitespace-nowrap">Portfolio <span class="text-red-600" id="count-display">39 leviers</span></h2>
-                <div class="h-6 w-[1px] bg-slate-200 hidden sm:block"></div>
-                <div id="pilotsList" class="flex gap-4 overflow-x-auto no-scrollbar items-center">
-                    <!-- Généré par JS -->
-                </div>
-            </div>
+        <div class="flex flex-col xl:flex-row justify-end items-center mb-10 gap-6 border-b border-gray-100 pb-6">
             <div class="flex gap-6 overflow-x-auto w-full xl:w-auto justify-start xl:justify-end no-scrollbar" id="axe-filters">
-                <button class="axe-filter-btn active whitespace-nowrap" onclick="filterByAxe('all')">Tous</button>
-                <button class="axe-filter-btn whitespace-nowrap" onclick="filterByAxe(1)">Fondamentaux</button>
-                <button class="axe-filter-btn whitespace-nowrap" onclick="filterByAxe(2)">La communauté m'aide</button>
-                <button class="axe-filter-btn whitespace-nowrap" onclick="filterByAxe(3)">J'aide la communauté</button>
-                <button class="axe-filter-btn whitespace-nowrap" onclick="filterByAxe(4)">Collectifs</button>
+                <button class="axe-filter-btn active whitespace-nowrap" onclick="filterByAxe('all')" style="color: #1e293b;">Tout voir</button>
+                <button class="axe-filter-btn whitespace-nowrap hover:opacity-80" onclick="filterByAxe(1)" style="color: var(--axe1-color)">Fondamentaux</button>
+                <button class="axe-filter-btn whitespace-nowrap hover:opacity-80" onclick="filterByAxe(2)" style="color: var(--axe2-color)">La communauté m'aide</button>
+                <button class="axe-filter-btn whitespace-nowrap hover:opacity-80" onclick="filterByAxe(3)" style="color: var(--axe3-color)">J'aide la communauté</button>
+                <button class="axe-filter-btn whitespace-nowrap hover:opacity-80" onclick="filterByAxe(4)" style="color: var(--axe4-color)">Entraide collective</button>
             </div>
         </div>
 
@@ -186,7 +180,7 @@
         <div class="bg-white max-w-xl w-full p-10 shadow-2xl rounded-2xl border border-gray-100 animate-in fade-in zoom-in duration-200">
             <div class="flex justify-between items-start mb-8">
                 <div class="pr-6">
-                    <span id="mAxe" class="text-[10px] uppercase tracking-widest text-red-600 font-black italic">AXE</span>
+                    <span id="mAxe" class="text-[10px] uppercase tracking-widest font-black italic">AXE</span>
                     <h3 id="mTitle" class="text-2xl font-bold mt-2 leading-tight text-gray-900">Titre</h3>
                 </div>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-black p-2 text-xl">✕</button>
@@ -200,43 +194,42 @@
                         <span id="mPilot" class="text-base font-bold text-slate-800">NOM PORTEUR</span>
                     </div>
                 </div>
-                <button id="mContactBtn" class="bg-black text-white px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-red-600 transition-colors">
+                <button id="mContactBtn" class="bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-slate-50 transition-colors shadow-sm">
                     Envoyer un message
                 </button>
             </div>
 
             <p id="mDesc" class="text-base text-gray-500 leading-relaxed mb-8">Description...</p>
 
-            <div class="border-t border-gray-100 pt-8">
+            <div id="editZone" class="border-t border-gray-100 pt-8">
                 <div class="flex justify-between items-end mb-5">
                     <span class="text-[10px] uppercase font-black text-gray-400">Progression Actuelle</span>
-                    <span id="mProgressText" class="text-3xl font-black text-red-600 italic">0%</span>
+                    <span id="mProgressText" class="text-3xl font-black italic">0%</span>
                 </div>
-                <input id="mSlider" type="range" min="0" max="100" class="w-full accent-[#d32f2f] h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer" oninput="updateModalProgress(this.value)">
+                <input id="mSlider" type="range" min="0" max="100" class="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer" oninput="updateModalProgress(this.value)">
+                
+                <button id="saveBtn" onclick="saveProgress()" class="w-full bg-slate-900 text-white py-4 mt-8 rounded-xl text-xs font-bold uppercase tracking-[0.2em] hover:bg-slate-800 transition-all shadow-lg">
+                    Mettre à jour le levier
+                </button>
             </div>
-
-            <button onclick="saveProgress()" class="w-full bg-red-600 text-white py-4 mt-8 rounded-xl text-xs font-bold uppercase tracking-[0.2em] hover:bg-red-700 transition-all shadow-lg">Enregistrer les modifications</button>
         </div>
     </div>
 
     <script>
-        const STORAGE_KEY = 'dsi_cockpit_data_v1';
-        const axeLabels = ["", "Fondamentaux", "La communauté m'aide", "J'aide la communauté", "Collectifs"];
+        const STORAGE_KEY = 'dsi_cockpit_data_v3'; 
+        const axeLabels = ["", "Les fondamentaux", "La communauté m'aide", "J'aide la communauté", "Entraide collective"];
+        const axeColors = ["", "#6fad9f", "#d15092", "#f1a53a", "#4693ad"];
         const pilotsNames = ["David P.", "Anne D.", "Vanessa G.", "Sylvie Z.", "Marc L.", "Kevin M.", "Isabelle R.", "Julien C.", "Arthur C.", "Angélique B."];
         
         let projects = [];
         let filterAxe = 'all';
-        let filterPilot = 'all';
         let activeId = null;
-
-        // --- GESTION DES DONNÉES ---
 
         function initData() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 projects = JSON.parse(saved);
             } else {
-                // Génération initiale
                 for(let i=1; i<=39; i++) {
                     const axeIdx = (i % 4) + 1;
                     projects.push({
@@ -244,7 +237,7 @@
                         axe: axeIdx,
                         title: getInitialTitle(i),
                         pilot: pilotsNames[i % pilotsNames.length],
-                        progress: Math.floor(Math.random() * 40), // Progression de départ aléatoire
+                        progress: Math.floor(Math.random() * 40), 
                         desc: getInitialDesc(i)
                     });
                 }
@@ -265,8 +258,6 @@
             return "Action stratégique n°" + i + " visant à renforcer l'efficacité opérationnelle et la fluidité des échanges au sein de la DSI pour la trajectoire 2026.";
         }
 
-        // --- NAVIGATION & FILTRES ---
-
         function switchView(view) {
             document.getElementById('view-grid').classList.toggle('hidden', view !== 'grid');
             document.getElementById('view-piste').classList.toggle('hidden', view !== 'piste');
@@ -274,16 +265,15 @@
             document.getElementById('btn-piste').classList.toggle('active', view === 'piste');
         }
 
-        function setPilotFilter(p) {
-            filterPilot = p;
-            renderPilots();
-            filterAll();
-        }
-
         function filterByAxe(axe) {
             filterAxe = axe;
             document.querySelectorAll('.axe-filter-btn').forEach((btn, idx) => {
-                btn.classList.toggle('active', (axe === 'all' && idx === 0) || (axe == idx));
+                btn.classList.remove('font-extrabold', 'underline', 'decoration-2', 'underline-offset-4');
+                btn.style.opacity = "0.6";
+                if ((axe === 'all' && idx === 0) || (axe == idx)) {
+                    btn.classList.add('font-extrabold', 'underline', 'decoration-2', 'underline-offset-4');
+                    btn.style.opacity = "1";
+                }
             });
             filterAll();
         }
@@ -292,45 +282,36 @@
             const search = document.getElementById('mainSearch').value.toLowerCase();
             const filtered = projects.filter(p => {
                 const mAxe = filterAxe === 'all' || p.axe == filterAxe;
-                const mPilot = filterPilot === 'all' || p.pilot == filterPilot;
                 const mSearch = p.title.toLowerCase().includes(search) || p.pilot.toLowerCase().includes(search);
-                return mAxe && mPilot && mSearch;
+                return mAxe && mSearch;
             });
-            document.getElementById('count-display').textContent = `${filtered.length} levier${filtered.length > 1 ? 's' : ''}`;
             renderGrid(filtered);
             renderPistes(filtered);
-        }
-
-        // --- RENDU UI ---
-
-        function renderPilots() {
-            const container = document.getElementById('pilotsList');
-            const uniq = [...new Set(projects.map(p => p.pilot))].sort();
-            container.innerHTML = `<button onclick="setPilotFilter('all')" class="text-[10px] font-bold uppercase transition-colors ${filterPilot === 'all' ? 'text-red-600 underline underline-offset-4' : 'text-slate-400'}">Tous</button>`;
-            uniq.forEach(p => {
-                container.innerHTML += `<button onclick="setPilotFilter('${p}')" class="text-[10px] font-bold uppercase whitespace-nowrap transition-colors ${filterPilot === p ? 'text-red-600 underline underline-offset-4' : 'text-slate-400'}">${p}</button>`;
-            });
         }
 
         function renderGrid(data) {
             const grid = document.getElementById('projectsGrid');
             grid.innerHTML = "";
             data.forEach(p => {
+                const color = axeColors[p.axe];
+                const num = String(p.id).padStart(2, '0');
+                const cardStyle = `onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='#e2e8f0'"`;
+
                 grid.innerHTML += `
-                    <div class="glass-card" onclick="if(!event.target.closest('.pilot-link')) openModal(${p.id})">
+                    <div class="glass-card" ${cardStyle} onclick="if(!event.target.closest('.pilot-link')) openModal(${p.id})">
                         <div class="flex justify-between items-start mb-4">
-                            <span class="axe-label">${axeLabels[p.axe]}</span>
-                            <span class="precon-id">#${String(p.id).padStart(2, '0')}</span>
+                            <span class="axe-label" style="color:${color}">${axeLabels[p.axe]}</span>
+                            <span class="precon-id">#${num}</span>
                         </div>
                         <h3 class="text-sm font-bold leading-tight text-slate-900 mb-2 line-clamp-2 h-10 italic">${p.title}</h3>
                         <p class="text-xs text-slate-500 line-clamp-2 mb-6">${p.desc}</p>
                         <div class="mt-auto">
                             <div class="flex justify-between items-end mb-2">
                                 <span class="pilot-link" onclick="contactPilot('${p.pilot}', '${p.title}')">${p.pilot}</span>
-                                <span class="text-xs font-black italic">${p.progress}%</span>
+                                <span class="text-xs font-black italic" style="color:${color}">${p.progress}%</span>
                             </div>
                             <div class="progress-track">
-                                <div class="progress-fill" style="width: ${p.progress}%"></div>
+                                <div class="progress-fill" style="width: ${p.progress}%; background-color: ${color}"></div>
                             </div>
                         </div>
                     </div>
@@ -342,47 +323,70 @@
             const container = document.getElementById('pistesContainer');
             container.innerHTML = "";
             for(let i=1; i<=4; i++) {
+                if (filterAxe !== 'all' && filterAxe != i) continue;
+                const color = axeColors[i];
                 container.innerHTML += `
                     <div class="bg-white border border-gray-100 p-8 rounded-xl">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 italic mb-6 block">${axeLabels[i]}</span>
-                        <div class="relative h-16 flex items-center">
-                            <div class="absolute inset-x-0 h-[2px] bg-slate-50"></div>
-                            <div id="track-${i}" class="relative w-full h-full"></div>
+                        <span class="text-[10px] font-black uppercase tracking-widest italic mb-6 block" style="color:${color}">${axeLabels[i]}</span>
+                        <div class="relative h-20 flex items-center pt-4">
+                            <div class="absolute inset-x-0 h-[2px] bg-slate-100 top-1/2 -translate-y-1/2"></div>
+                            <div class="absolute inset-x-0 h-full pointer-events-none select-none">
+                                <div class="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[2px] bg-slate-200"></div>
+                                <div class="absolute left-0 top-[70%] text-[10px] font-bold text-slate-400 -translate-x-1/2">0%</div>
+                                <div class="absolute left-[25%] top-1/2 -translate-y-1/2 h-3 w-[1px] bg-slate-200"></div>
+                                <div class="absolute left-[25%] top-[70%] text-[10px] font-bold text-slate-400 -translate-x-1/2">25%</div>
+                                <div class="absolute left-[50%] top-1/2 -translate-y-1/2 h-4 w-[2px] bg-slate-200"></div>
+                                <div class="absolute left-[50%] top-[70%] text-[10px] font-bold text-slate-400 -translate-x-1/2">50%</div>
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 h-4 w-[2px] bg-slate-200"></div>
+                                <div class="absolute right-0 top-[70%] text-[10px] font-bold text-slate-400 translate-x-1/2">100%</div>
+                            </div>
+                            <div id="track-${i}" class="relative w-full h-full z-10"></div>
                         </div>
                     </div>
                 `;
                 const track = document.getElementById(`track-${i}`);
                 data.filter(p => p.axe === i).forEach(p => {
-                    const jitter = ((p.id * 17) % 30) - 15;
+                    const jitter = ((p.id * 17) % 36) - 18;
                     const pion = document.createElement('div');
                     pion.style.cssText = `
-                        width: 28px; height: 28px; background: white; border: 2px solid var(--maif-red);
+                        width: 28px; height: 28px; background: white; border: 2px solid ${color}; color: ${color};
                         font-size: 10px; font-weight: 800; display: grid; place-items: center;
                         border-radius: 8px; position: absolute; cursor: pointer;
                         left: ${p.progress}%; top: calc(50% + ${jitter}px); transform: translate(-50%, -50%);
-                        box-shadow: 0 4px 10px rgba(211, 47, 47, 0.2); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                     `;
                     pion.innerHTML = p.id;
                     pion.onclick = () => openModal(p.id);
-                    pion.onmouseenter = () => pion.style.transform = 'translate(-50%, -50%) scale(1.3) rotate(5deg)';
-                    pion.onmouseleave = () => pion.style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
+                    pion.onmouseenter = () => { pion.style.transform = 'translate(-50%, -50%) scale(1.3)'; pion.style.zIndex = 50; pion.style.background = color; pion.style.color = 'white'; };
+                    pion.onmouseleave = () => { pion.style.transform = 'translate(-50%, -50%) scale(1)'; pion.style.zIndex = 1; pion.style.background = 'white'; pion.style.color = color; };
                     track.appendChild(pion);
                 });
             }
         }
 
-        // --- MODAL & ACTIONS ---
-
         function openModal(id) {
             activeId = id;
             const p = projects.find(x => x.id === id);
+            const color = axeColors[p.axe];
+
             document.getElementById('mTitle').textContent = p.title;
-            document.getElementById('mAxe').textContent = `AXE ${p.axe} : ${axeLabels[p.axe]}`;
+            const axeSpan = document.getElementById('mAxe');
+            axeSpan.textContent = `AXE ${p.axe} : ${axeLabels[p.axe]}`;
+            axeSpan.style.color = color;
+
             document.getElementById('mPilot').textContent = p.pilot;
             document.getElementById('mAvatar').textContent = p.pilot.split(' ').map(n=>n[0]).join('');
             document.getElementById('mDesc').textContent = p.desc;
-            document.getElementById('mSlider').value = p.progress;
+            
+            const slider = document.getElementById('mSlider');
+            slider.value = p.progress;
+            slider.style.accentColor = color;
+            
+            const progressText = document.getElementById('mProgressText');
+            progressText.style.color = color;
             updateModalProgress(p.progress);
+
+            document.getElementById('mContactBtn').onclick = () => contactPilot(p.pilot, p.title);
             document.getElementById('backdrop').classList.replace('hidden', 'flex');
         }
 
@@ -407,18 +411,8 @@
             window.location.href = `mailto:${email}?subject=Levier Transfo: ${title}`;
         }
 
-        function downloadApp() {
-            const htmlContent = document.documentElement.outerHTML;
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'cockpit_dsi_2026.html';
-            a.click();
-        }
-
         window.onload = () => {
             initData();
-            renderPilots();
             filterAll();
         };
     </script>
