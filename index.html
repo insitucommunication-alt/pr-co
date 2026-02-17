@@ -1,420 +1,824 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Cockpit DSI 2026 – Culture Coopération</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --maif-red: #d32f2f;
-            --bg-neutral: #f8fafc;
-            --border-color: #e2e8f0;
-            --text-main: #1e293b;
-            
-            /* Couleurs des Axes */
-            --axe1-color: #6fad9f;
-            --axe2-color: #d15092;
-            --axe3-color: #f1a53a;
-            --axe4-color: #4693ad;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vers une culture de la coopération renforcée</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-neutral);
-            color: var(--text-main);
-            -webkit-font-smoothing: antialiased;
-        }
+  <style>
+    :root{
+      /* --- Brand (MAIF) --- */
+      --maif-red-logo:#fc0d1a;    /* rouge logo (ne pas utiliser pour du texte fin) */
+      --maif-black:#000000;
+      --maif-grey:#58595b;
 
-        .glass-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            min-height: 165px;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            border-radius: 12px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            position: relative;
-        }
-        .glass-card:hover {
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            transform: translateY(-3px);
-        }
+      /* --- UI neutrals (proches "site") --- */
+      --bg-page:#f6f6f6;
+      --bg-surface:#ffffff;
+      --bg-subtle:#f2f2f2;
+      --text-main:#1a1a1a;
+      --text-muted:#6b6b6b;
+      --border:#e3e3e3;
+      --border-strong:#d6d6d6;
 
-        .axe-label {
-            font-size: 9px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+      /* --- UI red accessible (choix volontaire) ---
+         Le DS indique que les couleurs sont adaptées pour le web (liste indispo ici),
+         donc on utilise un rouge plus sombre pour liens/états/focus, et on garde le rouge logo pour les accents forts. */
+      --maif-red-ui:#d32f2f;
 
-        .precon-id {
-            font-size: 10px;
-            font-weight: 900;
-            color: #94a3b8;
-        }
+      /* --- Radii (moins "bubble") --- */
+      --radius-sm:10px;
+      --radius-md:12px;
+      --radius-lg:14px;
 
-        .pilot-link {
-            font-weight: 700;
-            color: #475569;
-            text-decoration: underline;
-            text-underline-offset: 3px;
-            text-decoration-color: #cbd5e1;
-            transition: all 0.2s;
-            z-index: 10;
-            font-size: 11px;
-        }
-        .pilot-link:hover {
-            color: var(--text-main);
-            text-decoration-color: var(--text-main);
-        }
+      /* --- Focus --- */
+      --focus: 0 0 0 3px rgba(211,47,47,.18);
 
-        .progress-track {
-            height: 6px;
-            background-color: #f1f5f9;
-            width: 100%;
-            border-radius: 4px;
-            margin-top: 8px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease-out;
-        }
+      /* --- Axes (à remplacer par des teintes du nuancier MAIF si tu as accès à la palette web) --- */
+      --axe1:#578fa6;
+      --axe2:#b88ba7;
+      --axe3:#7FB39A;
+      --axe4:#D1A06A;
+    }
 
-        .header-blur {
-            backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.95);
-            border-bottom: 1px solid var(--border-color);
-        }
+    /* === Base === */
+    html,body{ height:100%; }
+    body{
+      font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, sans-serif;
+      background:var(--bg-page);
+      color:var(--text-main);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    a,button,input{ -webkit-tap-highlight-color: transparent; }
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible{
+      outline:none;
+      box-shadow:var(--focus);
+      border-radius:10px;
+    }
 
-        .nav-link {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding-bottom: 4px;
-            border-bottom: 2px solid transparent;
-            color: #94a3b8;
-            letter-spacing: 0.05em;
-        }
-        .nav-link.active {
-            color: #1e293b;
-            border-bottom-color: #1e293b;
-        }
+    @media (prefers-reduced-motion: reduce){
+      *{ transition:none !important; scroll-behavior:auto !important; }
+    }
 
-        .axe-filter-btn {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #64748b;
-            letter-spacing: 0.02em;
-            transition: color 0.2s;
-        }
+    /* === Layout container (moins "app full width") === */
+    .container-maif{
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    @media (min-width: 768px){
+      .container-maif{ padding: 0 28px; }
+    }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;  
-            overflow: hidden;
-        }
-    </style>
+    /* === Header === */
+    header{ background:var(--bg-surface); }
+    .topbar{
+      background:var(--bg-surface);
+      border-bottom:1px solid var(--border);
+    }
+    .subbar{
+      background:var(--bg-subtle);
+      border-bottom:1px solid var(--border);
+    }
+
+    .brand-logo{
+      height:44px;
+      width:auto;
+      display:block;
+    }
+
+    .main-nav{
+      display:flex;
+      align-items:center;
+      gap:26px;
+    }
+    .main-nav-item{
+      position:relative;
+      padding:18px 0;
+      font-size:15px;
+      font-weight:700;
+      color:var(--text-main);
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      letter-spacing:-0.01em;
+    }
+    .main-nav-item:hover{ color:#000; }
+    .main-nav-item.active{
+      color:var(--maif-red-ui);
+    }
+    .main-nav-item.active::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:10px;
+      height:2px;
+      background:var(--maif-red-ui);
+      border-radius:2px;
+    }
+
+    /* === Subnav === */
+    .subnav{
+      display:flex;
+      align-items:center;
+      gap:22px;
+      overflow-x:auto;
+      scrollbar-width:none;
+    }
+    .subnav::-webkit-scrollbar{ display:none; }
+    .subnav-item{
+      position:relative;
+      padding:14px 0;
+      font-size:13px;
+      font-weight:700;
+      color:var(--text-main);
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .subnav-item:hover{ color:#000; }
+    .subnav-item.active{
+      color:var(--maif-red-ui);
+    }
+    .subnav-item.active::after{
+      content:"";
+      position:absolute;
+      left:0; right:0;
+      bottom:-1px;
+      height:2px;
+      background:var(--maif-red-ui);
+      border-radius:2px;
+    }
+
+    /* === Icon buttons (calmes) === */
+    .icon-btn{
+      width:40px; height:40px;
+      border-radius:9999px;
+      display:flex; align-items:center; justify-content:center;
+      border:1px solid transparent;
+      background:transparent;
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .icon-btn:hover{
+      background:rgba(0,0,0,.04);
+      border-color:rgba(0,0,0,.06);
+    }
+    .icon-red{ color:var(--maif-red-ui); }
+
+    /* === Search === */
+    .search-wrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .search-shell{
+      width:0;
+      opacity:0;
+      overflow:hidden;
+      transition:width .2s ease, opacity .15s ease;
+    }
+    .search-shell.open{
+      width:320px;
+      opacity:1;
+    }
+    @media (max-width: 768px){
+      .search-shell.open{ width:220px; }
+    }
+    .search-input{
+      width:100%;
+      height:38px;
+      border-radius:var(--radius-sm);
+      border:1px solid var(--border-strong);
+      background:#fff;
+      padding:0 12px;
+      font-size:13px;
+      font-weight:700;
+      color:var(--text-main);
+    }
+    .search-input::placeholder{ color:#8a8a8a; font-weight:700; }
+
+    /* === Title === */
+    .hero-title{
+  margin:26px 0 22px;
+  font-size:30px;
+  line-height:1.15;
+  font-weight:200;          /* base plus fine */
+  color:var(--text-main);
+  letter-spacing:-0.02em;
+}
+
+.hero-light{
+  font-weight:200;          /* “fin” (avec Arial, 300 ne sert souvent à rien) */
+  color:var(--text-main);
+}
+
+.hero-strong{
+  font-weight:900;          /* bien gras */
+  color:var(--maif-red-ui);
+}
+
+    /* === Cards (plus "site", moins "SaaS") === */
+    .card{
+      background:var(--bg-surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius-md);
+      padding:18px;
+      min-height:190px;
+      display:flex;
+      flex-direction:column;
+      cursor:pointer;
+      box-shadow:0 1px 1px rgba(0,0,0,0.03);
+      transition: box-shadow .18s ease, border-color .18s ease;
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:4px;
+      border-top-left-radius:var(--radius-md);
+      border-bottom-left-radius:var(--radius-md);
+      background: var(--axe, var(--maif-grey));
+      opacity:.9;
+    }
+    .card:hover{
+      border-color:var(--border-strong);
+      box-shadow:0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    .axe-badge{
+      font-size:10px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      padding:4px 10px;
+      border-radius:9999px;
+      background:#fff;
+      border:1px solid var(--border);
+      color:var(--text-main);
+    }
+    .meta-id{
+      font-size:10px;
+      font-weight:800;
+      color:#9b9b9b;
+    }
+
+    .theme-label{
+      font-size:11px;
+      font-weight:800;
+      color:var(--text-muted);
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      margin-top:12px;
+      margin-bottom:4px;
+      display:block;
+    }
+
+    .title-clamp{
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .pilot-name{ font-size:12px; font-weight:800; color:#444; }
+    .progress-track{
+      height:6px;
+      background:#ededed;
+      width:100%;
+      border-radius:9999px;
+      margin-top:10px;
+      overflow:hidden;
+      border:1px solid #e6e6e6;
+    }
+    .progress-bar{
+      height:100%;
+      border-radius:9999px;
+      background: var(--axe, var(--maif-grey));
+      transition: width .4s ease;
+    }
+
+    /* === Piste containers === */
+    .panel{
+      background:var(--bg-surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:22px 22px;
+      box-shadow:0 1px 1px rgba(0,0,0,0.03);
+    }
+    @media (min-width:768px){
+      .panel{ padding:26px 28px; }
+    }
+
+    /* === Modal === */
+    #backdrop{
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(2px);
+    }
+    .modal{
+      background:var(--bg-surface);
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:0 18px 50px rgba(0,0,0,.22);
+    }
+    .modal-close{
+      width:36px;height:36px;
+      border-radius:9999px;
+      background:#f3f3f3;
+      border:1px solid #e7e7e7;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .modal-close:hover{ background:#ededed; }
+
+    .modal-kv{
+      background:#f5f5f5;
+      border:1px solid #e9e9e9;
+      border-radius:var(--radius-md);
+      padding:14px 14px;
+    }
+    .pill-link{
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:#444;
+      border-bottom:1px solid #cfcfcf;
+      padding-bottom:1px;
+    }
+    .pill-link:hover{ color:#000; border-bottom-color:#000; }
+  </style>
 </head>
+
 <body>
 
-    <header class="header-blur sticky top-0 z-50 px-8 py-4">
-        <div class="max-w-[1600px] mx-auto grid grid-cols-3 items-center">
-            <!-- Gauche: Navigation -->
-            <nav class="flex gap-8">
-                <button onclick="switchView('grid')" id="btn-grid" class="nav-link active">Vos préconisations</button>
-                <button onclick="switchView('piste')" id="btn-piste" class="nav-link">Tableau de bord</button>
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="container-maif">
+        <div class="flex items-center justify-between gap-6">
+          <div class="flex items-center gap-7 min-w-0">
+            <a href="#" class="shrink-0" aria-label="Accueil">
+              <!-- SVG officiel -->
+              <img class="brand-logo"
+                   src="https://static.maif.fr/resources/img/logo-maif.svg"
+                   alt="MAIF">
+            </a>
+
+            <nav class="main-nav" aria-label="Navigation principale">
+              <button onclick="switchView('grid')" id="btn-grid" class="main-nav-item active">Préconisations</button>
+              <button onclick="switchView('piste')" id="btn-piste" class="main-nav-item">Tableau de bord</button>
             </nav>
+          </div>
 
-            <!-- Centre: Titre Stratégique -->
-            <div class="flex flex-col items-center text-center">
-                <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400 leading-tight">Vers une culture de la</span>
-                <span class="text-lg font-black uppercase tracking-tight text-[#d32f2f] leading-none mt-1">Coopération renforcée</span>
-            </div>
-
-            <!-- Droite: Recherche -->
-            <div class="flex justify-end">
-                <input id="mainSearch" oninput="filterAll()" type="text" placeholder="Rechercher..." class="bg-gray-50 border border-gray-200 rounded-full px-5 py-1.5 text-xs w-56 focus:ring-1 focus:ring-slate-400 outline-none transition-all">
-            </div>
+          <div class="hidden md:block"></div>
         </div>
-    </header>
-
-    <main class="max-w-[1600px] mx-auto p-8">
-        
-        <div class="flex flex-col xl:flex-row justify-end items-center mb-10 gap-6 border-b border-gray-100 pb-6">
-            <div class="flex gap-6 overflow-x-auto w-full xl:w-auto justify-start xl:justify-end no-scrollbar" id="axe-filters">
-                <button class="axe-filter-btn active whitespace-nowrap" onclick="filterByAxe('all')" style="color: #1e293b;">Tout voir</button>
-                <button class="axe-filter-btn whitespace-nowrap hover:opacity-80" onclick="filterByAxe(1)" style="color: var(--axe1-color)">Fondamentaux</button>
-                <button class="axe-filter-btn whitespace-nowrap hover:opacity-80" onclick="filterByAxe(2)" style="color: var(--axe2-color)">La communauté m'aide</button>
-                <button class="axe-filter-btn whitespace-nowrap hover:opacity-80" onclick="filterByAxe(3)" style="color: var(--axe3-color)">J'aide la communauté</button>
-                <button class="axe-filter-btn whitespace-nowrap hover:opacity-80" onclick="filterByAxe(4)" style="color: var(--axe4-color)">Entraide collective</button>
-            </div>
-        </div>
-
-        <!-- GRID VIEW -->
-        <section id="view-grid">
-            <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <!-- Généré par JS -->
-            </div>
-        </section>
-
-        <!-- PISTE VIEW -->
-        <section id="view-piste" class="hidden">
-            <div id="pistesContainer" class="space-y-8">
-                <!-- Généré par JS -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Modal de Détail -->
-    <div id="backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4" onclick="if(event.target===this) closeModal()">
-        <div class="bg-white max-w-xl w-full p-10 shadow-2xl rounded-2xl border border-gray-100 animate-in fade-in zoom-in duration-200">
-            <div class="flex justify-between items-start mb-8">
-                <div class="pr-6">
-                    <span id="mAxe" class="text-[10px] uppercase tracking-widest font-black italic">AXE</span>
-                    <h3 id="mTitle" class="text-2xl font-bold mt-2 leading-tight text-gray-900">Titre</h3>
-                </div>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-black p-2 text-xl">✕</button>
-            </div>
-
-            <div class="flex items-center justify-between bg-slate-50 p-5 rounded-xl mb-8">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-sm font-bold text-slate-400" id="mAvatar">--</div>
-                    <div>
-                        <span class="text-[9px] uppercase text-gray-400 font-black block mb-1">Responsable</span>
-                        <span id="mPilot" class="text-base font-bold text-slate-800">NOM PORTEUR</span>
-                    </div>
-                </div>
-                <button id="mContactBtn" class="bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-slate-50 transition-colors shadow-sm">
-                    Envoyer un message
-                </button>
-            </div>
-
-            <p id="mDesc" class="text-base text-gray-500 leading-relaxed mb-8">Description...</p>
-
-            <div id="editZone" class="border-t border-gray-100 pt-8">
-                <div class="flex justify-between items-end mb-5">
-                    <span class="text-[10px] uppercase font-black text-gray-400">Progression Actuelle</span>
-                    <span id="mProgressText" class="text-3xl font-black italic">0%</span>
-                </div>
-                <input id="mSlider" type="range" min="0" max="100" class="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer" oninput="updateModalProgress(this.value)">
-                
-                <button id="saveBtn" onclick="saveProgress()" class="w-full bg-slate-900 text-white py-4 mt-8 rounded-xl text-xs font-bold uppercase tracking-[0.2em] hover:bg-slate-800 transition-all shadow-lg">
-                    Mettre à jour le levier
-                </button>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <script>
-        const STORAGE_KEY = 'dsi_cockpit_data_v3'; 
-        const axeLabels = ["", "Les fondamentaux", "La communauté m'aide", "J'aide la communauté", "Entraide collective"];
-        const axeColors = ["", "#6fad9f", "#d15092", "#f1a53a", "#4693ad"];
-        const pilotsNames = ["David P.", "Anne D.", "Vanessa G.", "Sylvie Z.", "Marc L.", "Kevin M.", "Isabelle R.", "Julien C.", "Arthur C.", "Angélique B."];
-        
-        let projects = [];
-        let filterAxe = 'all';
-        let activeId = null;
+    <!-- Subbar -->
+    <div class="subbar">
+      <div class="container-maif">
+        <div class="flex items-center justify-between gap-6">
 
-        function initData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                projects = JSON.parse(saved);
-            } else {
-                for(let i=1; i<=39; i++) {
-                    const axeIdx = (i % 4) + 1;
-                    projects.push({
-                        id: i,
-                        axe: axeIdx,
-                        title: getInitialTitle(i),
-                        pilot: pilotsNames[i % pilotsNames.length],
-                        progress: Math.floor(Math.random() * 40), 
-                        desc: getInitialDesc(i)
-                    });
-                }
-                saveToStorage();
-            }
+          <div class="flex items-center gap-5 min-w-0">
+            <button class="icon-btn icon-red" type="button" onclick="filterByAxe('all')" aria-label="Tous les axes">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M3 10.5L12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z"/>
+              </svg>
+            </button>
+
+            <div class="subnav" aria-label="Filtres axes">
+              <button class="subnav-item active" data-axe="all" onclick="filterByAxe('all')">Tous les axes</button>
+              <button class="subnav-item" data-axe="1" onclick="filterByAxe(1)">Les fondamentaux</button>
+              <button class="subnav-item" data-axe="2" onclick="filterByAxe(2)">L'aide de la communauté</button>
+              <button class="subnav-item" data-axe="3" onclick="filterByAxe(3)">J'aide la communauté</button>
+              <button class="subnav-item" data-axe="4" onclick="filterByAxe(4)">Le collectif</button>
+            </div>
+          </div>
+
+          <!-- Recherche inline -->
+          <div class="search-wrap">
+            <div id="searchShell" class="search-shell">
+              <input id="mainSearch"
+                     oninput="filterAll()"
+                     class="search-input"
+                     type="text"
+                     placeholder="Rechercher...">
+            </div>
+
+            <button class="icon-btn" type="button" onclick="toggleSearch()" aria-label="Rechercher">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M21 21l-5.5-5.5m2-5A7 7 0 1 1 3 10a7 7 0 0 1 14 0z"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container-maif pb-7 md:pb-10">
+    <h1 <h1 class="hero-title">
+  <span class="hero-light">Vers une culture de la </span>
+  <span class="hero-strong">coopération renforcée</span>
+    </h1>
+
+    <section id="view-grid">
+      <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+    </section>
+
+    <section id="view-piste" class="hidden">
+      <div id="pistesContainer" class="space-y-5"></div>
+    </section>
+  </main>
+
+  <!-- MODAL -->
+  <div id="backdrop" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="modal max-w-lg w-full p-7 md:p-8">
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <span id="mAxeBadge"
+                class="text-[10px] uppercase tracking-[0.10em] font-black text-white px-2 py-1 rounded"
+                style="background:var(--maif-grey)">AXE</span>
+
+          <h3 id="mTitle" class="text-[18px] md:text-[20px] font-black mt-3 leading-snug text-black">Titre</h3>
+          <span id="mTheme" class="text-[12px] font-extrabold text-[#6b6b6b] mt-2 block uppercase tracking-[0.03em]">Thème</span>
+        </div>
+
+        <button onclick="closeModal()" class="modal-close" aria-label="Fermer">✕</button>
+      </div>
+
+      <div class="modal-kv flex items-center justify-between mb-7">
+        <div class="flex items-center gap-3">
+          <div id="mAvatar" class="w-10 h-10 bg-white border border-[#e3e3e3] rounded-full flex items-center justify-center text-[12px] font-black text-[#555]">--</div>
+          <div>
+            <span class="text-[10px] uppercase text-[#7a7a7a] font-black tracking-[0.08em] block">Porteur</span>
+            <span id="mPilot" class="text-[14px] font-black text-[#222]">prenom NOM</span>
+          </div>
+        </div>
+
+        <a id="mContactBtn" href="#" class="pill-link">Contacter</a>
+      </div>
+
+      <div class="pt-5 border-t border-[#ededed]">
+        <div class="flex justify-between items-end mb-4">
+          <span class="text-[10px] uppercase font-black tracking-[0.10em] text-[#7a7a7a]">Progression</span>
+          <span id="mProgressText" class="text-2xl font-black text-[#111]">0%</span>
+        </div>
+
+        <!-- Slider désactivé -->
+        <input id="mSlider" type="range" min="0" max="100"
+               class="w-full h-2 bg-[#ededed] rounded-lg appearance-none cursor-not-allowed opacity-60 accent-black"
+               disabled>
+
+        <!-- Bouton désactivé -->
+        <button id="mValidateBtn" onclick="saveProgress()" disabled
+                class="w-full bg-black text-white py-3.5 mt-6 rounded-[12px] text-[11px] font-black uppercase tracking-[0.12em] opacity-55 cursor-not-allowed">
+          Valider
+        </button>
+
+        <p class="text-[12px] text-[#7a7a7a] mt-3 font-bold">
+          Mise à jour centralisée : édition des % dans GitHub.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'dsi_cockpit_v6';
+
+    const axeLabels = ["", "Les Fondamentaux", "Aide de la communauté", "J'aide la communauté", "Entraide collective"];
+
+    /* Axes : volontairement sobres (à remplacer par des couleurs du nuancier MAIF si tu as la palette web) */
+    const axeColors = ["", getComputedStyle(document.documentElement).getPropertyValue('--axe1').trim(),
+                          getComputedStyle(document.documentElement).getPropertyValue('--axe2').trim(),
+                          getComputedStyle(document.documentElement).getPropertyValue('--axe3').trim(),
+                          getComputedStyle(document.documentElement).getPropertyValue('--axe4').trim()];
+
+    // localStorage safe (évite plantage => cartes absentes)
+    const safeStorage = {
+      get(key){ try { return window.localStorage.getItem(key); } catch(e){ return null; } },
+      set(key, val){ try { window.localStorage.setItem(key, val); } catch(e){ /* ignore */ } }
+    };
+
+    const rawCSVData = [
+      { id: 1, axe: 1, theme: "Sécurisation des compétences", title: "Cartographier les compétences fonctionnelles critiques.", pilot: "Julien GUERIN" },
+      { id: 2, axe: 1, theme: "Sécurisation des compétences", title: "Documenter le savoir pour le maintien des compétences.", pilot: "Julien GUERIN" },
+      { id: 4, axe: 1, theme: "Efficacité du delivery", title: "Maîtriser les fondamentaux de l'agilité (affinage).", pilot: "Tribu TRANSFO" },
+      { id: 5, axe: 1, theme: "Efficacité du delivery", title: "Travailler sur incarnation les rôles au sein des squads.", pilot: "Tribu TRANSFO" },
+      { id: 6, axe: 1, theme: "Efficacité du delivery", title: "Formaliser l'amélioration continue.", pilot: "Tanguy DADE" },
+      { id: 7, axe: 1, theme: "Efficacité du delivery", title: "Adopter le réflexe de la mesure via les KPI.", pilot: "David PORTAL" },
+      { id: 8, axe: 1, theme: "Efficacité du delivery", title: "Agiliser le SI (DevOps, Cloud, Tests).", pilot: "Ghislain RAYNAL" },
+      { id: 9, axe: 1, theme: "Appropriation des rôles", title: "Accompagner l'appropriation des rôles PO et AM.", pilot: "Arthur CLERFEUILLE" },
+      { id: 10, axe: 1, theme: "Synergie Métiers / SI", title: "Clarifier les périmètres transverses (BA, UX, Ops, RM).", pilot: "" },
+      { id: 11, axe: 1, theme: "Harmonisation PMO", title: "Aligner le management fonctionnel sur le référentiel PMO.", pilot: "Kévin MACCIONI" },
+      { id: 12, axe: 1, theme: "Périmètres & Pratiques RE/RT", title: "Staffer l'alignement objectifs, suivi du collab et évolutions", pilot: "Nadège DESCHAMPS" },
+      { id: 13, axe: 1, theme: "Accompagnement du management", title: "Ancrer les 5 postures du manager agile.", pilot: "Sylvie ZULIANI" },
+      { id: 14, axe: 1, theme: "Accompagnement du management", title: "Renforcer le pilotage capacitaire.", pilot: "Anne DEMPURE" },
+      { id: 15, axe: 1, theme: "Accompagnement du management", title: "Renforcer la culture du feedback.", pilot: "Sylvie ZULIANI" },
+      { id: 16, axe: 1, theme: "Accompagnement du management", title: "Renforcer la légitimer BO.", pilot: "Sylvie ZULIANI" },
+      { id: 17, axe: 1, theme: "Priorisation Tribu", title: "Outiller sur la priorisation par la valeur.", pilot: "Tribu TRANSFO" },
+      { id: 18, axe: 1, theme: "Expérience client Métiers", title: "Expliquer l'organisation agile SI aux métiers.", pilot: "Marie-France THICKETT" },
+      { id: 19, axe: 2, theme: "Efficacité du delivery", title: "Renforcer la culture du feedback", pilot: "Laurent SOHIER" },
+      { id: 20, axe: 2, theme: "Efficacité du delivery", title: "Renforcer la mise en place des rétro.", pilot: "Tanguy DADE" },
+      { id: 21, axe: 2, theme: "Efficacité du delivery", title: "Généraliser le feedback individuel.", pilot: "" },
+      { id: 22, axe: 2, theme: "Transparence et responsabilisation", title: "Responsabiliser les collectifs sur leur autonomie réelle.", pilot: "Angélique BEAUSEIGNEUR" },
+      { id: 23, axe: 3, theme: "Reporting & Outils", title: "Harmoniser les pratiques de reporting.", pilot: "Angélique BEAUSEIGNEUR" },
+      { id: 24, axe: 3, theme: "Reporting & Outils", title: "Harmoniser l'usage des outils (JIRA, QUALIAC, ARIANE).", pilot: "Kévin MACCIONI" },
+      { id: 25, axe: 3, theme: "Efficacité du delivery", title: "Standardiser la documentation (Markdown & GitHub).", pilot: "Ghislain RAYNAL" },
+      { id: 25, axe: 3, theme: "Synchros Inter-tribus", title: "Développer les synchros inter-tribus par chaîne de valeur.", pilot: "" },
+      { id: 26, axe: 3, theme: "Priorisation Tribu", title: "Intégrer IO/MCO/RUN dans les feuilles de route.", pilot: "Tribu TRANSFO" },
+      { id: 27, axe: 3, theme: "Livraisons & Déploiements", title: "Outiller les RDM", pilot: "" },
+      { id: 28, axe: 3, theme: "Livraisons & Déploiements", title: "Optimiser les livraisons (VSI vs autres).", pilot: "Delphine GEAY" },
+      { id: 29, axe: 3, theme: "Transparence et responsabilisation", title: "Renforcer la transparence sur les décisions stratégiques", pilot: "Angélique BEAUSEIGNEUR" },
+      { id: 30, axe: 4, theme: "Fonctionnement des squads", title: "Adapter la taille des collectifs à l'efficience recherchée.", pilot: "" },
+      { id: 31, axe: 4, theme: "Priorisation Tribu", title: "Étendre le pilotage capacitaire à tout le périmètre.", pilot: "Anne DEMPURE" },
+      { id: 32, axe: 4, theme: "Expérience client Métiers", title: "Réduire l'effort métiers.", pilot: "Marie-France THICKETT" },
+      { id: 33, axe: 4, theme: "Expérience client Métiers", title: "Offrir une transparence sur les priorisations des petites demandes", pilot: "Vanessa GARREAU" },
+      { id: 34, axe: 4, theme: "Synergie Métiers / SI", title: "Aligner sur les priorisations par la valeur (IO – ACO) ​", pilot: "" },
+      { id: 35, axe: 4, theme: "Synergie Métiers / SI", title: "Staffing/organisation associer", pilot: "" },
+      { id: 36, axe: 4, theme: "Synergie Métiers / SI", title: "Déployer priorisation par la valeur", pilot: "" },
+      { id: 37, axe: 4, theme: "Synergie Métiers / SI", title: "Harmoniser le cadre et les pratiques de synchro.", pilot: "Gaelle PONCE" },
+      { id: 38, axe: 4, theme: "Transparence et responsabilisation", title: "Impliquer les parties prenantes dans le processus de priorisation.", pilot: "Angélique BEAUSEIGNEUR" },
+      { id: 39, axe: 4, theme: "Efficacité du delivery", title: "Aligner les parties prenantes sur les chiffrages.", pilot: "Cédric CHAPRON" }
+    ];
+
+    let projects = [];
+    let filterAxe = 'all';
+    let activeUid = null;
+
+    // Format: Prenom (minuscule) + NOM (majuscule)
+    function formatName(rawName){
+      if(!rawName || rawName === "À DÉFINIR" || rawName.trim() === "") return "À DÉFINIR";
+      if(rawName.toLowerCase().includes("tribu")) return rawName;
+
+      const parts = rawName.trim().split(/\s+/);
+      if(parts.length > 1){
+        const lastName = parts.pop().toUpperCase();
+        const firstNames = parts
+          .map(p => p.split('-').map(sub => sub.toLowerCase()).join('-'))
+          .join(" ");
+        return `${firstNames} ${lastName}`;
+      }
+      return rawName;
+    }
+
+    function initData(){
+      const saved = safeStorage.get(STORAGE_KEY);
+      if(saved){
+        try{
+          projects = JSON.parse(saved);
+          if(!Array.isArray(projects) || projects.length === 0) throw new Error("empty");
+        }catch(e){
+          projects = [];
         }
+      }
+      if(!projects || projects.length === 0){
+        projects = rawCSVData.map((item,index)=>({
+          uid:index,
+          displayId:item.id,
+          axe:item.axe,
+          theme:item.theme,
+          title:item.title,
+          pilot:formatName(item.pilot),
+          progress:0
+        }));
+        saveToStorage();
+      }
+    }
 
-        function saveToStorage() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+    function saveToStorage(){
+      safeStorage.set(STORAGE_KEY, JSON.stringify(projects));
+    }
+
+    function switchView(view){
+      document.getElementById('view-grid').classList.toggle('hidden', view !== 'grid');
+      document.getElementById('view-piste').classList.toggle('hidden', view !== 'piste');
+
+      document.querySelectorAll('.main-nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById(`btn-${view}`).classList.add('active');
+    }
+
+    function filterByAxe(axe){
+      filterAxe = axe;
+      document.querySelectorAll('[data-axe]').forEach(btn => {
+        const v = btn.dataset.axe;
+        const isActive = (axe === 'all' && v === 'all') || (String(axe) === v);
+        btn.classList.toggle('active', isActive);
+      });
+      filterAll();
+    }
+
+    function filterAll(){
+      const input = document.getElementById('mainSearch');
+      const search = (input ? input.value : "").toLowerCase();
+
+      const filtered = projects.filter(p => {
+        const mAxe = filterAxe === 'all' || p.axe == filterAxe;
+        const mSearch = p.title.toLowerCase().includes(search) ||
+                        p.pilot.toLowerCase().includes(search) ||
+                        p.theme.toLowerCase().includes(search);
+        return mAxe && mSearch;
+      });
+
+      renderGrid(filtered);
+      renderPistes(filtered);
+    }
+
+    function renderGrid(data){
+      const grid = document.getElementById('projectsGrid');
+      if(!grid) return;
+
+      grid.innerHTML = "";
+      data.forEach(p => {
+        const color = axeColors[p.axe] || "#58595b";
+        const num = String(p.displayId).padStart(2,'0');
+
+        grid.innerHTML += `
+          <div class="card" style="--axe:${color}" onclick="if(!event.target.closest('a')) openModal(${p.uid})">
+            <div class="flex justify-between items-center mb-3">
+              <span class="axe-badge">${axeLabels[p.axe]}</span>
+              <span class="meta-id">#${num}</span>
+            </div>
+
+            <span class="theme-label">${p.theme}</span>
+            <h3 class="text-[14px] font-black text-black leading-snug mb-4 title-clamp">${p.title}</h3>
+
+            <div class="mt-auto pt-4 border-t border-[#efefef]">
+              <div class="flex justify-between items-end mb-2">
+                <span class="pilot-name truncate max-w-[70%]">${p.pilot}</span>
+                <span class="text-[13px] font-black" style="color:${color}">${p.progress}%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar" style="width:${p.progress}%"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderPistes(data){
+      const container = document.getElementById('pistesContainer');
+      if(!container) return;
+
+      container.innerHTML = "";
+      for(let i=1; i<=4; i++){
+        if(filterAxe !== 'all' && filterAxe != i) continue;
+        const color = axeColors[i] || "#58595b";
+
+        container.innerHTML += `
+          <div class="panel">
+            <div class="flex items-center gap-3 mb-7">
+              <div class="w-3 h-3 rounded-full" style="background:${color}"></div>
+              <span class="text-[12px] font-black uppercase tracking-[0.10em] text-[#5f5f5f]">${axeLabels[i]}</span>
+            </div>
+
+            <div class="relative h-24 select-none">
+              <div class="absolute top-1/2 left-0 right-0 h-[6px] bg-[#ededed] rounded-full -translate-y-1/2 border border-[#e6e6e6]"></div>
+
+              <div class="absolute inset-0 pointer-events-none text-[10px] font-black text-[#9b9b9b]">
+                <div class="absolute left-0 top-[62%] -translate-x-1/2">0%</div>
+                <div class="absolute left-1/4 top-[62%] -translate-x-1/2">25%</div>
+                <div class="absolute left-1/2 top-[62%] -translate-x-1/2">50%</div>
+                <div class="absolute left-3/4 top-[62%] -translate-x-1/2">75%</div>
+                <div class="absolute right-0 top-[62%] translate-x-1/2">100%</div>
+              </div>
+
+              <div id="track-${i}" class="relative w-full h-full z-10"></div>
+            </div>
+          </div>
+        `;
+
+        const track = document.getElementById(`track-${i}`);
+        data.filter(p => p.axe === i).forEach(p => {
+          const jitter = ((p.displayId * 13) % 40) - 20;
+          const pion = document.createElement('div');
+
+          pion.className = "absolute w-9 h-9 bg-white rounded-[10px] border-2 shadow-sm flex items-center justify-center cursor-pointer transition-transform hover:scale-[1.08] hover:z-50";
+          pion.style.borderColor = color;
+          pion.style.color = color;
+          pion.style.left = `${p.progress}%`;
+          pion.style.top = `calc(50% + ${jitter}px)`;
+          pion.style.transform = "translate(-50%, -50%)";
+          pion.style.fontSize = "11px";
+          pion.style.fontWeight = "900";
+          pion.innerText = p.displayId;
+
+          pion.onmouseenter = () => { pion.style.background = color; pion.style.color = "white"; };
+          pion.onmouseleave = () => { pion.style.background = "white"; pion.style.color = color; };
+          pion.onclick = () => openModal(p.uid);
+
+          track.appendChild(pion);
+        });
+      }
+    }
+
+    function openModal(uid){
+      activeUid = uid;
+      const p = projects.find(x => x.uid === uid);
+      if(!p) return;
+
+      const color = axeColors[p.axe] || "#58595b";
+
+      document.getElementById('mTitle').textContent = p.title;
+
+      const axeBadge = document.getElementById('mAxeBadge');
+      axeBadge.textContent = axeLabels[p.axe];
+      axeBadge.style.backgroundColor = color;
+
+      document.getElementById('mTheme').textContent = p.theme;
+      document.getElementById('mPilot').textContent = p.pilot;
+
+      // Avatar
+      let initials = "?";
+      if(p.pilot && p.pilot !== "À DÉFINIR" && !p.pilot.includes("Tribu")){
+        const parts = p.pilot.split(' ');
+        initials = parts[0][0].toUpperCase() + (parts.length > 1 ? parts[parts.length-1][0].toUpperCase() : '');
+      }else if(p.pilot.includes("Tribu")){
+        initials = "TR";
+      }
+      document.getElementById('mAvatar').textContent = initials;
+
+      // Slider & Progress (lecture seule)
+      const slider = document.getElementById('mSlider');
+      slider.value = p.progress;
+      slider.style.accentColor = color;
+
+      const progressText = document.getElementById('mProgressText');
+      progressText.style.color = color;
+      progressText.textContent = `${p.progress}%`;
+
+      // Contact Link
+      const contactBtn = document.getElementById('mContactBtn');
+      if(p.pilot === "À DÉFINIR"){
+        contactBtn.style.display = 'none';
+      }else{
+        contactBtn.style.display = 'block';
+        const cleanName = p.pilot.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if(cleanName.includes("tribu")){
+          contactBtn.href = "mailto:tribu.transfo@maif.fr";
+        }else{
+          const mailParts = cleanName.split(' ');
+          const email = `${mailParts[0]}.${mailParts[mailParts.length-1]}@maif.fr`;
+          contactBtn.href = `mailto:${email}?subject=Préconisation: ${p.title}`;
         }
+      }
 
-        function getInitialTitle(i) {
-            const titles = ["Cartographie compétences", "Standard Knowledge", "Reporting JIRA", "Portail Roadmap", "Synergie Métier", "Socle DevOps", "Observabilité", "Gouvernance Data", "Culture FinOps"];
-            return titles[i % titles.length] + " (Préco #" + String(i).padStart(2, '0') + ")";
-        }
+      const backdrop = document.getElementById('backdrop');
+      backdrop.classList.remove('hidden');
+      backdrop.classList.add('flex');
+    }
 
-        function getInitialDesc(i) {
-            return "Action stratégique n°" + i + " visant à renforcer l'efficacité opérationnelle et la fluidité des échanges au sein de la DSI pour la trajectoire 2026.";
-        }
+    function closeModal(){
+      const backdrop = document.getElementById('backdrop');
+      backdrop.classList.add('hidden');
+      backdrop.classList.remove('flex');
+    }
 
-        function switchView(view) {
-            document.getElementById('view-grid').classList.toggle('hidden', view !== 'grid');
-            document.getElementById('view-piste').classList.toggle('hidden', view !== 'piste');
-            document.getElementById('btn-grid').classList.toggle('active', view === 'grid');
-            document.getElementById('btn-piste').classList.toggle('active', view === 'piste');
-        }
+    // Désactivé (lecture seule) : ne fait rien
+    function saveProgress(){ return; }
 
-        function filterByAxe(axe) {
-            filterAxe = axe;
-            document.querySelectorAll('.axe-filter-btn').forEach((btn, idx) => {
-                btn.classList.remove('font-extrabold', 'underline', 'decoration-2', 'underline-offset-4');
-                btn.style.opacity = "0.6";
-                if ((axe === 'all' && idx === 0) || (axe == idx)) {
-                    btn.classList.add('font-extrabold', 'underline', 'decoration-2', 'underline-offset-4');
-                    btn.style.opacity = "1";
-                }
-            });
-            filterAll();
-        }
+    /* Toggle recherche inline */
+    function toggleSearch(force){
+      const shell = document.getElementById('searchShell');
+      const input = document.getElementById('mainSearch');
+      const isOpen = shell.classList.contains('open');
+      const shouldOpen = (force === true) || (force === undefined && !isOpen);
 
-        function filterAll() {
-            const search = document.getElementById('mainSearch').value.toLowerCase();
-            const filtered = projects.filter(p => {
-                const mAxe = filterAxe === 'all' || p.axe == filterAxe;
-                const mSearch = p.title.toLowerCase().includes(search) || p.pilot.toLowerCase().includes(search);
-                return mAxe && mSearch;
-            });
-            renderGrid(filtered);
-            renderPistes(filtered);
-        }
+      if(shouldOpen){
+        shell.classList.add('open');
+        setTimeout(() => input && input.focus(), 0);
+      }else{
+        shell.classList.remove('open');
+      }
+    }
 
-        function renderGrid(data) {
-            const grid = document.getElementById('projectsGrid');
-            grid.innerHTML = "";
-            data.forEach(p => {
-                const color = axeColors[p.axe];
-                const num = String(p.id).padStart(2, '0');
-                const cardStyle = `onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='#e2e8f0'"`;
+    window.onload = () => {
+      initData();
+      filterAll();
 
-                grid.innerHTML += `
-                    <div class="glass-card" ${cardStyle} onclick="if(!event.target.closest('.pilot-link')) openModal(${p.id})">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="axe-label" style="color:${color}">${axeLabels[p.axe]}</span>
-                            <span class="precon-id">#${num}</span>
-                        </div>
-                        <h3 class="text-sm font-bold leading-tight text-slate-900 mb-2 line-clamp-2 h-10 italic">${p.title}</h3>
-                        <p class="text-xs text-slate-500 line-clamp-2 mb-6">${p.desc}</p>
-                        <div class="mt-auto">
-                            <div class="flex justify-between items-end mb-2">
-                                <span class="pilot-link" onclick="contactPilot('${p.pilot}', '${p.title}')">${p.pilot}</span>
-                                <span class="text-xs font-black italic" style="color:${color}">${p.progress}%</span>
-                            </div>
-                            <div class="progress-track">
-                                <div class="progress-fill" style="width: ${p.progress}%; background-color: ${color}"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape') toggleSearch(false);
+      });
 
-        function renderPistes(data) {
-            const container = document.getElementById('pistesContainer');
-            container.innerHTML = "";
-            for(let i=1; i<=4; i++) {
-                if (filterAxe !== 'all' && filterAxe != i) continue;
-                const color = axeColors[i];
-                container.innerHTML += `
-                    <div class="bg-white border border-gray-100 p-8 rounded-xl">
-                        <span class="text-[10px] font-black uppercase tracking-widest italic mb-6 block" style="color:${color}">${axeLabels[i]}</span>
-                        <div class="relative h-20 flex items-center pt-4">
-                            <div class="absolute inset-x-0 h-[2px] bg-slate-100 top-1/2 -translate-y-1/2"></div>
-                            <div class="absolute inset-x-0 h-full pointer-events-none select-none">
-                                <div class="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[2px] bg-slate-200"></div>
-                                <div class="absolute left-0 top-[70%] text-[10px] font-bold text-slate-400 -translate-x-1/2">0%</div>
-                                <div class="absolute left-[25%] top-1/2 -translate-y-1/2 h-3 w-[1px] bg-slate-200"></div>
-                                <div class="absolute left-[25%] top-[70%] text-[10px] font-bold text-slate-400 -translate-x-1/2">25%</div>
-                                <div class="absolute left-[50%] top-1/2 -translate-y-1/2 h-4 w-[2px] bg-slate-200"></div>
-                                <div class="absolute left-[50%] top-[70%] text-[10px] font-bold text-slate-400 -translate-x-1/2">50%</div>
-                                <div class="absolute right-0 top-1/2 -translate-y-1/2 h-4 w-[2px] bg-slate-200"></div>
-                                <div class="absolute right-0 top-[70%] text-[10px] font-bold text-slate-400 translate-x-1/2">100%</div>
-                            </div>
-                            <div id="track-${i}" class="relative w-full h-full z-10"></div>
-                        </div>
-                    </div>
-                `;
-                const track = document.getElementById(`track-${i}`);
-                data.filter(p => p.axe === i).forEach(p => {
-                    const jitter = ((p.id * 17) % 36) - 18;
-                    const pion = document.createElement('div');
-                    pion.style.cssText = `
-                        width: 28px; height: 28px; background: white; border: 2px solid ${color}; color: ${color};
-                        font-size: 10px; font-weight: 800; display: grid; place-items: center;
-                        border-radius: 8px; position: absolute; cursor: pointer;
-                        left: ${p.progress}%; top: calc(50% + ${jitter}px); transform: translate(-50%, -50%);
-                        box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    `;
-                    pion.innerHTML = p.id;
-                    pion.onclick = () => openModal(p.id);
-                    pion.onmouseenter = () => { pion.style.transform = 'translate(-50%, -50%) scale(1.3)'; pion.style.zIndex = 50; pion.style.background = color; pion.style.color = 'white'; };
-                    pion.onmouseleave = () => { pion.style.transform = 'translate(-50%, -50%) scale(1)'; pion.style.zIndex = 1; pion.style.background = 'white'; pion.style.color = color; };
-                    track.appendChild(pion);
-                });
-            }
-        }
-
-        function openModal(id) {
-            activeId = id;
-            const p = projects.find(x => x.id === id);
-            const color = axeColors[p.axe];
-
-            document.getElementById('mTitle').textContent = p.title;
-            const axeSpan = document.getElementById('mAxe');
-            axeSpan.textContent = `AXE ${p.axe} : ${axeLabels[p.axe]}`;
-            axeSpan.style.color = color;
-
-            document.getElementById('mPilot').textContent = p.pilot;
-            document.getElementById('mAvatar').textContent = p.pilot.split(' ').map(n=>n[0]).join('');
-            document.getElementById('mDesc').textContent = p.desc;
-            
-            const slider = document.getElementById('mSlider');
-            slider.value = p.progress;
-            slider.style.accentColor = color;
-            
-            const progressText = document.getElementById('mProgressText');
-            progressText.style.color = color;
-            updateModalProgress(p.progress);
-
-            document.getElementById('mContactBtn').onclick = () => contactPilot(p.pilot, p.title);
-            document.getElementById('backdrop').classList.replace('hidden', 'flex');
-        }
-
-        function closeModal() {
-            document.getElementById('backdrop').classList.replace('flex', 'hidden');
-        }
-
-        function updateModalProgress(val) {
-            document.getElementById('mProgressText').textContent = `${val}%`;
-        }
-
-        function saveProgress() {
-            const p = projects.find(x => x.id === activeId);
-            p.progress = parseInt(document.getElementById('mSlider').value);
-            saveToStorage();
-            filterAll();
-            closeModal();
-        }
-
-        function contactPilot(name, title) {
-            const email = name.toLowerCase().replace(' ', '.') + "@maif.fr";
-            window.location.href = `mailto:${email}?subject=Levier Transfo: ${title}`;
-        }
-
-        window.onload = () => {
-            initData();
-            filterAll();
-        };
-    </script>
+      // click outside modal closes
+      document.getElementById('backdrop').addEventListener('click', (e) => {
+        if(e.target && e.target.id === 'backdrop') closeModal();
+      });
+    };
+  </script>
 </body>
 </html>
